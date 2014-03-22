@@ -1,0 +1,39 @@
+#!/bin/bash
+
+### This script regenerates the packaged html templates, copies any needed files
+### (read: config files) to their proper place, and packages the turtl XPI file.
+###
+### Note that this script is meant to be run in the top-level addon folder, not
+### not in the scripts/ folder.
+
+# ------------------------------------------------------------------------------
+# config section
+# ------------------------------------------------------------------------------
+# path to cfx
+CFX=`realpath ../../../addon-sdk-1.14/bin/cfx`
+# tmp dir for generating package
+TMP=/tmp/turtl-package
+# the resulting XPI file (*must* be the same as what cfx xpi produces)
+XPI=firefox.xpi
+
+EXTDIR=`realpath .`
+
+echo "Copying files to $TMP for packaging."
+mkdir -p $TMP
+rsync -avk . $TMP/ --exclude="release/" --exclude=".git" --exclude="data/app/.git" > /dev/null
+pushd $TMP > /dev/null
+echo "Copying live config(s) over local"
+cp lib/config.live.js lib/config.js
+cp lib/config.app.js data/app/config/config.js
+
+# package the addon
+echo "Packaging addon (via cfx)."
+$CFX xpi > /dev/null
+
+mv turtl.xpi $EXTDIR/release/$XPI
+popd > /dev/null
+
+rm -rf $TMP
+
+echo "Complete. Created fully-packaged file: release/$XPI."
+

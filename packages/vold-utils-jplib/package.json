@@ -1,0 +1,7 @@
+{
+    "name": "vold-utils",
+    "description": "Utilitys for Jetpacks",
+    "author": "Erik Vold (http://erikvold.com/) <erikvvold@gmail.com>",
+    "version": "2.0",
+    "dependencies": ["api-utils"]
+}

@@ -1,0 +1,16 @@
+{
+	"name": "turtl",
+	"fullName": "Turtl",
+	"id": "turtl@lyonbros.com",
+	"description": "A bookmarking utility for the Turtl app (https://turtl.it)",
+	"author": "Andrew Lyon",
+	"license": "GPLv3",
+	"version": "0.1.0",
+	"icon": "data/images/favicon.128.png",
+	"dependencies": [
+		"toolbar-button-complete"
+	],
+	"permissions": {
+		"private-browsing": true
+	}
+}
