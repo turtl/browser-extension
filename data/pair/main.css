@@ -1,0 +1,17 @@
+body {padding: 12px; font-size: 13px; font-family: arial; color: #222; line-height: 1.3em;}
+* {margin: 0; padding: 0;}
+
+#main {}
+#main > div {display: none; width: 300px;}
+#main > div.load {width: 16px; height: 16px;}
+#main.pair > .pair {display: block;}
+#main.error > .error {display: block;}
+#main.connect_error > .connect_error {display: block;}
+#main.load > .load {display: block;}
+
+#main > .pair input[type="text"] {font-size: 14px; width: 98%;}
+
+h1 {font-weight: normal; font-size: 20px; margin: 0 0 16px 0;}
+h2 {font-weight: normal; font-size: 18px; margin: 0 0 16px 0;}
+p {margin: 0 0 16px 0;}
+

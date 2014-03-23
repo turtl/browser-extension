@@ -1,0 +1,23 @@
+#!/bin/bash
+
+CORE=../../js
+
+cp $CORE/library/tcrypt.js data/
+cp $CORE/library/sjcl.js data/
+cp $CORE/library/mootools-core-1.4.5.js data/
+
+cp $CORE/images/site/icons/load_16x16.gif data/images
+cp $CORE/images/favicon.128.png data/images
+cp $CORE/images/favicon.png data/images
+
+# create some firefox/commonjs-specific versions of our libs. yegh.
+echo '"use strict";' > lib/sjcl.js
+echo "var win_util = require('sdk/window/utils');" >> lib/sjcl.js
+echo "var window = {crypto: win_util.getMostRecentBrowserWindow().crypto};" >> lib/sjcl.js
+cat data/sjcl.js >> lib/sjcl.js
+echo '"use strict";' > lib/tcrypt.js
+echo "var win_util = require('sdk/window/utils');" >> lib/tcrypt.js
+echo "var window = {crypto: win_util.getMostRecentBrowserWindow().crypto};" >> lib/tcrypt.js
+echo "var sjcl = require('sjcl');" >> lib/tcrypt.js
+cat data/tcrypt.js >> lib/tcrypt.js
+echo "exports.tcrypt = tcrypt;" >> lib/tcrypt.js

@@ -129,25 +129,15 @@ var do_bookmark	=	function(options)
 };
 
 // listen for commands from ze extenstion
-if(self && self.port)
-{
-	do_bookmark({
-		complete: function(data) {
+do_bookmark({
+	complete: function(data) {
+		if(self && self.port)
+		{
 			self.port.emit('bookmark-scrape', data);
 		}
-	});
-}
-else if(chrome && chrome.runtime)
-{
-	chrome.runtime.onConnect.addListener(function(port) {
-		port.onMessage.addListener(function(msg) {
-			if(msg.cmd != 'bookmark') return false;
-			do_bookmark({
-				complete: function(data) {
-					port.postMessage({type: 'bookmark-scrape', data: data});
-				}
-			});
-		});
-	});
-}
-
+		else
+		{
+			chrome.runtime.sendMessage({type: 'bookmark-scrape', data: data});
+		}
+	}
+});

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<meta http-equiv="Content-language" content="en">
+		<link rel="stylesheet" href="main.css">
+		<script src="../mootools-core-1.4.5.js"></script>
+		<script src="main.js"></script>
+	</head>
+	<body>
+		<div id="main">
+			<div class="pair">
+				<h1>Pair with Turtl desktop</h1>
+				<p>
+					Pairing is a one-time process to allow secure communication
+					between the Turtl extension and the Turtl desktop app.
+				</p>
+				<p>
+					Paste the code from the desktop app here:
+				</p>
+				<form id="form_code">
+					<input type="text" name="code" id="inp_code" placeholder="Paste the code here">
+				</form>
+			</div>
+			<div class="error">
+				<h1>Error talking to Turtl <span id="errcode"></span></h1>
+				<p id="errmsg"></p>
+			</div>
+			<div class="connect_error">
+				<h1>Problem connecting to Turtl</h1>
+				<p>
+					There was an problem talking to the Turtl app. Make sure
+					that Turtl is running and try clicking the button again.
+				</p>
+				<p>
+					If you don't have the Turtl desktop app yet, you can get it
+					from the <a href="https://turtl.it/download" target="_blank"><strong>Turtl download page</strong></a>.
+				</p>
+			</div>
+			<div class="load">
+				<img src="../images/load_16x16.gif" width="16" height="16" title="WORKING">
+			</div>
+		</div>
+	</body>
+</html>
+
