@@ -1,11 +1,23 @@
+function resize()
+{
+	(function() {
+		var main	=	$('main');
+		var div		=	main.getElement('> div.'+main.className);
+		if(!div) return;
+
+		var width	=	parseInt(div.getStyle('width')) + (parseInt(div.getStyle('padding')) * 2);
+		var height	=	main.getCoordinates().height + 1;
+		addon.port.emit('resize', width, height);
+	}).delay(1);
+}
+
 function switch_tab(classname)
 {
 	var main	=	$('main');
 	if(!main) return false;
 
 	main.className	=	classname;
-	var coords	=	document.body.getElement('#main > div').getCoordinates();
-	addon.port.emit('resize', coords.width + 24, coords.height + 24);
+	resize();
 }
 
 function set_error(msg, code)
@@ -45,6 +57,10 @@ function init()
 	$('inp_code').focus();
 }
 window.addEvent('domready', init);
+
+window.onresize	=	function() {
+	resize();
+}
 
 addon.port.on('switch-tab', function(tab) { switch_tab(tab); });
 addon.port.on('set-error', function(err, code) { set_error(err, code); });
