@@ -6,8 +6,6 @@ importScripts(
 // we need CBC for backwards compat
 sjcl.beware['CBC mode is dangerous because it doesn\'t protect message integrity.']();
 
-var window	=	{};
-
 self.addEventListener('message', function(e) {
 	var cmd		=	e.data.cmd;
 	var args	=	e.data.args;
