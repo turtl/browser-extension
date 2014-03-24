@@ -3,6 +3,7 @@
 CORE=../../js
 
 cp $CORE/library/tcrypt.js data/
+cp $CORE/library/tcrypt.thread.js data/
 cp $CORE/library/sjcl.js data/
 cp $CORE/library/mootools-core-1.4.5.js data/
 
