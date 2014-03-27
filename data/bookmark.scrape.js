@@ -81,6 +81,14 @@ var do_bookmark	=	function(options)
 		// if og_image sucks but we couldn't find another image, use it anyway
 		if(!image && og_image) image = og_image;
 
+		// fix rare but pesky relative urls
+		if(image)
+		{
+			var a	=	document.createElement('a');
+			a.href	=	image;
+			image	=	a.href;
+		}
+
 		// formulate our complete response LOL
 		var send	=	{
 			image: image,
