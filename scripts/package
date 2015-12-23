@@ -10,15 +10,18 @@
 # config section
 # ------------------------------------------------------------------------------
 # path to cfx
-CFX=`realpath ../../../addon-sdk-1.14/bin/cfx`
+JPM=$(which jpm)
 # the resulting XPI file (*must* be the same as what cfx xpi produces)
 XPI=firefox.xpi
 
+mkdir -p release/
+
 # package the addon
 echo "Packaging addon (via cfx)."
-$CFX xpi > /dev/null
+rm -f *.xpi
+$JPM xpi > /dev/null
 
-mv turtl.xpi release/$XPI
+mv `ls *.xpi | head -1` ../$XPI
 
 echo "Complete. Created fully-packaged file: release/$XPI."
 
