@@ -4,8 +4,8 @@ var bookmark	=	require('bookmark');
 var Panel		=	require('sdk/panel');
 var tcrypt		=	require('tcrypt').tcrypt;
 var ss			=	require('sdk/simple-storage');
-var timer		=	require('timer');
 var { on, once, off, emit }	=	require('sdk/event/core');
+var { setTimeout } = require('sdk/timers');
 
 // makes it easier to share code with chrome
 var localStorage	=	ss.storage;
@@ -54,7 +54,7 @@ var open	=	function(btn)
 		panel.resize(40, 40);
 		do_open();
 	}
-	panel.show(btn);
+	panel.show({position: btn});
 };
 
 var start	=	function()
@@ -70,12 +70,12 @@ var start	=	function()
 	var do_reopen	=	function()
 	{
 		panel.removeListener('hide', do_reopen);
-		timer.setTimeout(function() {
-			panel.show(get_btn());
+		setTimeout(function() {
+			panel.show({position: get_btn()});
 		}, 100);
 	};
 	panel.on('hide', do_reopen);
-	timer.setTimeout(function() { panel.removeListener('hide', do_reopen); }, 2000);
+	setTimeout(function() { panel.removeListener('hide', do_reopen); }, 2000);
 
 	comm.send('pair', null, {
 		success: function(res) {
