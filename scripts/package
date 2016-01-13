@@ -21,7 +21,7 @@ echo "Packaging addon (via cfx)."
 rm -f *.xpi
 $JPM xpi > /dev/null
 
-mv `ls *.xpi | head -1` ../$XPI
+mv `ls *.xpi | head -1` release/$XPI
 
 echo "Complete. Created fully-packaged file: release/$XPI."
 

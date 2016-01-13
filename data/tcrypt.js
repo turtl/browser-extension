@@ -1,4 +1,11 @@
 "use strict";
+var has_require = (typeof(require) != 'undefined');
+if((typeof(window) == 'undefined' || !window.crypto) && has_require)
+{
+	var win_util = require('sdk/window/utils');
+	var window = {crypto: win_util.getMostRecentBrowserWindow().crypto};
+}
+if(typeof(sjcl) == 'undefined' && has_require) var sjcl = require('data/sjcl');
 
 // define error(s) used by tcrypt
 var extend_error	=	function(extend, errname)
@@ -1003,3 +1010,4 @@ tcrypt.asym	=	{
 	}
 };
 
+if(typeof(exports) != 'undefined') exports.tcrypt = tcrypt;

@@ -3,7 +3,7 @@
  */
 var data		=	require('sdk/self').data;
 var pairing		=	require('pairing');
-var tcrypt		=	require('tcrypt').tcrypt;
+var tcrypt		=	require('data/tcrypt').tcrypt;
 var win_util	=	require('sdk/window/utils');
 var { XMLHttpRequest }	=	require('sdk/net/xhr');
 

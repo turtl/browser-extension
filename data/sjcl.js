@@ -1,3 +1,11 @@
+"use strict";
+var has_require = (typeof(require) != 'undefined');
+if((typeof(window) == 'undefined' || !window.crypto) && has_require)
+{
+	var win_util = require('sdk/window/utils');
+	var window = {crypto: win_util.getMostRecentBrowserWindow().crypto};
+}
+
 /** @fileOverview Javascript cryptography implementation.
  *
  * Crush to remove comments, shorten variable names and
@@ -8,7 +16,6 @@
  * @author Dan Boneh
  */
 
-"use strict";
 /*jslint indent: 2, bitwise: false, nomen: false, plusplus: false, white: false, regexp: false */
 /*global document, window, escape, unescape, module, require, Uint32Array */
 
