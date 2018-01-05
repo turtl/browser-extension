@@ -3,11 +3,11 @@ var tabs		=	require('sdk/tabs');
 
 var scrape	=	function(options)
 {
-    console.log("Scraping...")
+	console.log("Scraping...")
 	var tab		=	tabs.activeTab;
 	var title	=	tab.title;
 	var url		=	tab.url;
-    console.log(url); // Testing
+	console.log(url); // Testing
 	var type	=	tab.contentType.match(/^image/) ? 'image' : 'link';
 
 	// call this when we have all the data we need to open the panel and
