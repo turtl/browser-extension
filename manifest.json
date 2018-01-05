@@ -1,0 +1,20 @@
+{
+	"manifest_version": 2,
+	"name": "turtl",
+	"description": "A bookmarking utility for the Turtl app (https://turtl.it)",
+	"author": "Andrew Lyon",
+	"version": "0.5.1",
+	"icons": {
+		"48": "data/images/favicon.128.png"
+	},
+	"permissions": [
+		"tabs",
+		"activeTab",
+		"storage"
+	],
+	"browser_action": {
+		"default_icon": "data/images/favicon.png",
+		"default_title": "Bookmark",
+		"default_popup": "index.html"
+	}
+}
