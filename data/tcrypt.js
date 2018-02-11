@@ -838,7 +838,7 @@ var tcrypt = {
 	/**
 	 * Generate a random number between 0 and 1.
 	 *
-	 * Uses window.crypto for random generation, and if not available, bitches
+	 * Uses window.crypto for random generation, and if not available, whines
 	 * about how insecure your browser is.
 	 */
 	random_number: function()

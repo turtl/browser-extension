@@ -118,7 +118,7 @@ var do_bookmark = function(options)
 		};
 		img.src = og_image;
 
-		// if loading the image takes longer than a few seconds, fuck it, check the
+		// if loading the image takes longer than a few seconds, screw it, check the
 		// images on the page
 		setTimeout(function() {
 			// if og:image loaded already, just forget it
