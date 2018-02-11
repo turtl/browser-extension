@@ -9,8 +9,8 @@ var ext = {load_reason: null};
  */
 function compare_versions(v1, v2)
 {
-	var v1 = v1.split(/\./);
-	var v2 = v2.split(/\./);
+	var v1s = v1.split(/\./);
+	var v2s = v2.split(/\./);
 
 	for(var i = 0, n1 = v1s.length, n2 = v2s.length; i < n1 || i < n2; i++)
 	{

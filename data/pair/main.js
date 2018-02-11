@@ -21,29 +21,23 @@ function set_error(msg, code)
 
 function init()
 {
-	if(!app.ext.pairing.have_key())
-	{
-		app.ext.pairing.start();
-	}
-	else
-	{
+	if(app.ext.pairing.have_key()) {
 		switch_tab('load');
 		app.ext.pairing.do_bookmark();
+	} else {
+		app.ext.pairing.start();
 	}
 
 	var form = $('form_code');
 	var inp = $('inp_code');
-	if(form && inp)
-	{
+	if(form && inp) {
 		var val_set = false;
-		var onchange = function(e)
-		{
+		var onchange = function(e) {
 			setTimeout(function() {
 				var val = inp.value;
 				if(val_set || !val || val == '') return false;
 				val_set = true;
-				app.ext.pairing.set_key(val);
-				app.ext.pairing.finish();
+				app.ext.pairing.finish(val);
 			}, 0);
 		};
 

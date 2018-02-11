@@ -1,0 +1,6 @@
+/old/
+.DS_Store
+node_modules
+*.stackdump
+sess.vim
+

@@ -8,6 +8,7 @@
 		"48": "data/images/favicon.48.png",
 		"96": "data/images/favicon.96.png"
 	},
+	"minimum_chrome_version": "28.0",
 
 	"permissions": [
 		"tabs",

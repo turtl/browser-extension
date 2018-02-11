@@ -29,12 +29,12 @@ var do_bookmark = function(options)
 		return true;
 	};
 
-	var do_check_image = function()
+	var do_check_images = function()
 	{
 		if(!image)
 		{
-			var image = document.getElementsByTagName('img');
-			var div = document.getElementsByTagName('div');
+			var images = document.getElementsByTagName('img');
+			var divs = document.getElementsByTagName('div');
 
 			var size = 0;	// used to track largest image
 
@@ -70,7 +70,7 @@ var do_bookmark = function(options)
 				}
 			}
 		}
-	}
+	};
 
 	var finish = function()
 	{
@@ -103,7 +103,7 @@ var do_bookmark = function(options)
 		// we have an og:image ...is it big enough?
 		var img = new Image();
 		var loaded = false;
-		var cancelled = false;	
+		var cancelled = false;
 		img.onload = function() {
 			// we've been axed (probably took too long to load). do nothing
 			if(cancelled) return false;

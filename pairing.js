@@ -25,11 +25,13 @@ ext.pairing = {
 		});
 	},
 
-	finish: function()
+	finish: function(pubkey)
 	{
 		var popup = get_popup();
 		ext.comm.send('ping', 'hai', {
+			pubkey: pubkey,
 			success: function(res) {
+				ext.pairing.set_key(pubkey);
 				// finally, complete the action we set out to do
 				ext.pairing.do_bookmark();
 				if(popup) popup.switch_tab('load');
