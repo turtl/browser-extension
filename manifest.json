@@ -6,7 +6,8 @@
 	"version": "0.7.0",
 	"icons": {
 		"48": "data/images/favicon.48.png",
-		"96": "data/images/favicon.96.png"
+		"96": "data/images/favicon.96.png",
+		"128": "data/images/favicon.128.png"
 	},
 	"minimum_chrome_version": "28.0",
 
