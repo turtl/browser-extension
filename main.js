@@ -19,13 +19,10 @@ var is_background = true;
 ext.main.setup();
 
 // determine what kind of run we're doing
-var cur_version = chrome.app.getDetails().version;
-if(!localStorage.version)
-{
+var cur_version = chrome.runtime.getManifest().version;
+if(!localStorage.version) {
 	ext.load_reason = 'install';
-}
-else
-{
+} else {
 	var last_version = localStorage.version;
 	var comp = compare_versions(cur_version, last_version);
 	if(comp > 0) ext.load_reason = 'upgrade';
