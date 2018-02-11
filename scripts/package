@@ -7,7 +7,7 @@ ZIP=release/turtl.zip
 rm -rf $TMP/*
 
 echo -n "Copying extension files to temp directory..."
-rsync -avk . $TMP/ --exclude="release/" --exclude=".git" --exclude="data/app/.git" > /dev/null
+rsync -avk . $TMP/ --exclude="release/" --exclude="old" --exclude=".git" --exclude="data/app/.git" > /dev/null
 echo "done."
 
 EXTDIR=`realpath .`
