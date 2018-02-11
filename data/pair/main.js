@@ -1,15 +1,7 @@
-function resize()
-{
-	(function() {
-		var main	=	$('main');
-		var div		=	main.getElement('> div.'+main.className);
-		if(!div) return;
+var app	=	chrome.extension.getBackgroundPage();
 
-		var width	=	parseInt(div.getStyle('width')) + (parseInt(div.getStyle('padding')) * 2);
-		var height	=	main.getCoordinates().height + 1;
-		addon.port.emit('resize', width, height);
-	}).delay(1);
-}
+// vivaldi hack
+var is_popup = true;
 
 function switch_tab(classname)
 {
@@ -17,7 +9,6 @@ function switch_tab(classname)
 	if(!main) return false;
 
 	main.className	=	classname;
-	resize();
 }
 
 function set_error(msg, code)
@@ -30,6 +21,16 @@ function set_error(msg, code)
 
 function init()
 {
+	if(!app.ext.pairing.have_key())
+	{
+		app.ext.pairing.start();
+	}
+	else
+	{
+		switch_tab('load');
+		app.ext.pairing.do_bookmark();
+	}
+
 	var form	=	$('form_code');
 	var inp		=	$('inp_code');
 	if(form && inp)
@@ -41,28 +42,18 @@ function init()
 				var val	=	inp.value;
 				if(val_set || !val || val == '') return false;
 				val_set	=	true;
-				addon.port.emit('set-key', val);
-				addon.port.emit('finish');
+				app.ext.pairing.set_key(val);
+				app.ext.pairing.finish();
 			}, 0);
 		};
 
 		form.addEvent('submit', function(e) {
-			e.stop();
+			s.stop();
 			onchange();
 		}, false);
 		inp.addEvent('change', onchange, false);
 		inp.addEvent('paste', onchange, false);
 	}
-	addon.port.emit('loaded');
-	$('inp_code').focus();
 }
 window.addEvent('domready', init);
-
-window.onresize	=	function() {
-	resize();
-}
-
-addon.port.on('switch-tab', function(tab) { switch_tab(tab); });
-addon.port.on('set-error', function(err, code) { set_error(err, code); });
-addon.port.on('show', function() { $('inp_code').focus(); });
 

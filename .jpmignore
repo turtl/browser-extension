@@ -1,8 +1,0 @@
-.jpmignore
-.gitignore
-*.zip
-*.xpi
-/.git/
-/release/
-/scripts/
-

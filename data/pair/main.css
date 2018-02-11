@@ -1,8 +1,8 @@
-body {padding: 0; font-size: 13px; font-family: arial; color: #222; line-height: 1.3em;}
+body {padding: 12px; font-size: 13px; font-family: arial; color: #222; line-height: 1.3em;}
 * {margin: 0; padding: 0;}
 
 #main {}
-#main > div {display: none; width: 300px; padding: 12px;}
+#main > div {display: none; width: 300px;}
 #main > div.load {width: 16px; height: 16px;}
 #main.pair > .pair {display: block;}
 #main.error > .error {display: block;}
@@ -14,5 +14,4 @@ body {padding: 0; font-size: 13px; font-family: arial; color: #222; line-height:
 h1 {font-weight: normal; font-size: 20px; margin: 0 0 16px 0;}
 h2 {font-weight: normal; font-size: 18px; margin: 0 0 16px 0;}
 p {margin: 0 0 16px 0;}
-p:last-child {margin-bottom: 0;}
 

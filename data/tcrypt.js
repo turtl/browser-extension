@@ -1,11 +1,4 @@
 "use strict";
-var has_require = (typeof(require) != 'undefined');
-if((typeof(window) == 'undefined' || !window.crypto) && has_require)
-{
-	var win_util = require('sdk/window/utils');
-	var window = {crypto: win_util.getMostRecentBrowserWindow().crypto};
-}
-if(typeof(sjcl) == 'undefined' && has_require) var sjcl = require('data/sjcl');
 
 // define error(s) used by tcrypt
 var extend_error	=	function(extend, errname)
@@ -60,7 +53,8 @@ var tcrypt = {
 	default_padding: 1,
 	default_kdf_mode: 0,	// corresponds to tcrypt.kdf_index
 
-	// define some getters.
+	// define some getters. these really just wrap grabbing values out of the
+	// global window context, but in the future could be expanded
 	get_cipher: function(ciphername) { return sjcl.cipher[ciphername.toLowerCase()]; },
 	get_block_mode: function(blockmode) { return sjcl.mode[blockmode.toLowerCase()]; },
 	get_padding: function(padding) { return ''; },	// now unused
@@ -849,18 +843,16 @@ var tcrypt = {
 	 */
 	random_number: function()
 	{
-		if((typeof(window) == 'undefined' || !window.crypto) && sjcl && sjcl.random)
+		if(window.crypto.getRandomValues)
 		{
-			return sjcl.random.randomWords(1, 10)[0] / (Math.pow(2, 32) - 1);
-		}
-		else if(window.crypto.getRandomValues)
-		{
+			// TODO: verify dividing Uint32 / 2^32 is still random
 			// TODO: handle QuotaExceededError error in FF (maybe the same in chrome)
 			return window.crypto.getRandomValues(new Uint32Array(1))[0] / (Math.pow(2, 32) - 1);
 		}
 		else
 		{
-			throw new TcryptError('no available PRNG');
+			// TODO: crypto: use real crypto-PRNG
+			alert('Your browser does not support cryptographically secure random numbers. Please either update your browser or don\'t use this app =[.');
 		}
 	},
 
@@ -1010,4 +1002,3 @@ tcrypt.asym	=	{
 	}
 };
 
-if(typeof(exports) != 'undefined') exports.tcrypt = tcrypt;

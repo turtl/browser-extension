@@ -1,27 +1,37 @@
 #!/bin/bash
 
-### This script regenerates the packaged html templates, copies any needed files
-### (read: config files) to their proper place, and packages the turtl XPI file.
-###
-### Note that this script is meant to be run in the top-level addon folder, not
-### not in the scripts/ folder.
+# temp dir for packaging
+TMP=/tmp/turtl-package-chrome
+ZIP=release/turtl.zip
 
-# ------------------------------------------------------------------------------
-# config section
-# ------------------------------------------------------------------------------
-# path to cfx
-JPM=$(which jpm)
-# the resulting XPI file (*must* be the same as what cfx xpi produces)
-XPI=firefox.xpi
+rm -rf $TMP/*
 
-mkdir -p release/
+echo -n "Copying extension files to temp directory..."
+rsync -avk . $TMP/ --exclude="release/" --exclude=".git" --exclude="data/app/.git" > /dev/null
+echo "done."
 
-# package the addon
-echo "Packaging addon (via cfx)."
-rm -f *.xpi
-$JPM xpi > /dev/null
+EXTDIR=`realpath .`
+mkdir -p $TMP
+pushd $TMP/> /dev/null
 
-mv `ls *.xpi | head -1` release/$XPI
+echo "Packaging extension."
 
-echo "Complete. Created fully-packaged file: release/$XPI."
+echo -n "Zipping..."
+zip -qr -9 -X \
+	turtl.crx \
+	. \
+	-x *.git* \
+	-x release/* \
+	> /dev/null
+echo "done."
 
+mv turtl.crx $EXTDIR/$ZIP || {
+	echo "Problem moving $TMP/turtl.crx to $EXTDIR/$ZIP. Exiting."
+	exit 1
+}
+popd > /dev/null
+
+echo "Clearing tmp dir ($TMP/)"
+rm -rf $TMP
+
+echo "Complete. Created fully-packaged extension: $ZIP"
