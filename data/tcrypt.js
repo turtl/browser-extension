@@ -1,22 +1,22 @@
 "use strict";
 
 // define error(s) used by tcrypt
-var extend_error	=	function(extend, errname)
+var extend_error = function(extend, errname)
 {
-	var err	=	function() {
-		var tmp		=	extend.apply(this, arguments);
-		tmp.name	=	this.name = errname;
+	var err = function() {
+		var tmp = extend.apply(this, arguments);
+		tmp.name = this.name = errname;
 
-		this.stack		=	tmp.stack
-		this.message	=	tmp.message
+		this.stack = tmp.stack
+		this.message = tmp.message
 
 		return this;
 	};
-	err.prototype	=	Object.create(extend.prototype, { constructor: { value: err } });
+	err.prototype = Object.create(extend.prototype, { constructor: { value: err } });
 	return err;
 }
-var TcryptError			=	extend_error(Error, 'TcryptError');
-var TcryptAuthFailed	=	extend_error(TcryptError, 'TcryptAuthFailed');
+var TcryptError = extend_error(Error, 'TcryptError');
+var TcryptAuthFailed = extend_error(TcryptError, 'TcryptAuthFailed');
 
 var tcrypt = {
 	// -------------------------------------------------------------------------
@@ -109,18 +109,18 @@ var tcrypt = {
 
 		if(version >= 1)
 		{
-			var cipher_index	=	desc_str.charCodeAt(0);
-			var block_index		=	desc_str.charCodeAt(1);
-			var cipher_index	=	desc_str.charCodeAt(0);
-			var block_index		=	desc_str.charCodeAt(1);
+			var cipher_index = desc_str.charCodeAt(0);
+			var block_index = desc_str.charCodeAt(1);
+			var cipher_index = desc_str.charCodeAt(0);
+			var block_index = desc_str.charCodeAt(1);
 			if(version <= 4)
 			{
-				var kdf_mode	=	desc_str.charCodeAt(3);
-				var padding_index	=	desc_str.charCodeAt(2);
+				var kdf_mode = desc_str.charCodeAt(3);
+				var padding_index = desc_str.charCodeAt(2);
 			}
 		}
 
-		var ret	=	{
+		var ret = {
 			cipher: tcrypt.cipher_index[cipher_index],
 			block_mode: tcrypt.block_index[block_index],
 		};
@@ -143,13 +143,13 @@ var tcrypt = {
 
 		if(version >= 1)
 		{
-			var cipher		=	tcrypt.cipher_index.indexOf(options.cipher);
-			var block_mode	=	tcrypt.block_index.indexOf(options.block_mode);
-			var desc		=	String.fromCharCode(cipher) +
+			var cipher = tcrypt.cipher_index.indexOf(options.cipher);
+			var block_mode = tcrypt.block_index.indexOf(options.block_mode);
+			var desc = String.fromCharCode(cipher) +
 								String.fromCharCode(block_mode);
 			if(version <= 4)
 			{
-				var padding	=	tcrypt.padding_index.indexOf(options.padding);
+				var padding = tcrypt.padding_index.indexOf(options.padding);
 				desc	+=	String.fromCharCode(padding);
 				desc	+=	String.fromCharCode(options.kdf_mode);
 			}
@@ -168,14 +168,14 @@ var tcrypt = {
 	 */
 	authenticate_payload: function(passphrase, version, payload_description, iv, ciphertext)
 	{
-		payload_description	=	tcrypt.words_to_bin(payload_description);
-		var payload	=	version 
+		payload_description = tcrypt.words_to_bin(payload_description);
+		var payload = version 
 			+ payload_description.length
 			+ payload_description
 			+ tcrypt.words_to_bin(iv)
 			+ tcrypt.words_to_bin(ciphertext);
-		var hmac	=	new sjcl.misc.hmac(passphrase, tcrypt.get_hasher('SHA256'));
-		var hash	=	tcrypt.words_to_bin(hmac.mac(tcrypt.bin_to_words(payload)));
+		var hmac = new sjcl.misc.hmac(passphrase, tcrypt.get_hasher('SHA256'));
+		var hash = tcrypt.words_to_bin(hmac.mac(tcrypt.bin_to_words(payload)));
 		return hash;
 	},
 
@@ -192,12 +192,12 @@ var tcrypt = {
 	{
 		options || (options = {});
 
-		var hasher		=	options.hasher || tcrypt.get_hasher('SHA1');
-		var iterations	=	options.iterations || 50;
-		var key_size	=	options.key_size || 64;
+		var hasher = options.hasher || tcrypt.get_hasher('SHA1');
+		var iteration = options.iterations || 50;
+		var key_size = options.key_size || 64;
 
-		var master_bin	=	tcrypt.words_to_bin(master_key);
-		var both_keys	=	tcrypt.key(master_bin, null, {
+		var master_bin = tcrypt.words_to_bin(master_key);
+		var both_key = tcrypt.key(master_bin, null, {
 			hasher: hasher,
 			iterations: iterations,
 			key_size: key_size
@@ -205,8 +205,8 @@ var tcrypt = {
 
 		// split the resulting key down the middle, first half is crypto key,
 		// second half is hmac key
-		var enc_key		=	sjcl.bitArray.bitSlice(both_keys, 0, 256);
-		var hmac_key	=	sjcl.bitArray.bitSlice(both_keys, 256);
+		var enc_key = jcl.bitArray.bitSlice(both_keys, 0, 256);
+		var hmac_key = jcl.bitArray.bitSlice(both_keys, 256);
 
 		return {crypto: enc_key, hmac: hmac_key};
 	},
@@ -231,24 +231,24 @@ var tcrypt = {
 	{
 		options || (options = {});
 
-		var is_str		=	typeof(enc) == 'string';
-		var get_bytes	=	function(data, idx, length)
+		var is_str = typeof(enc) == 'string';
+		var get_byte = function(data, idx, length)
 		{
-			var sliceargs	=	length ? [data, idx * 8, (idx * 8) + (length * 8)] : [data, idx * 8];
+			var slicearg = length ? [data, idx * 8, (idx * 8) + (length * 8)] : [data, idx * 8];
 			return is_str ? tcrypt.bin_to_words(data.substr(idx, length)) : sjcl.bitArray.bitSlice.apply(this, sliceargs);
 		};
-		var get_byte	=	function(data, idx)
+		var get_byte = function(data, idx)
 		{
 			return is_str ? data.charCodeAt(idx) : sjcl.bitArray.extract(data, idx * 8, 8); 
 		}
 
 		// define an index we increment to keep track of deserialization
-		var idx	=	0;
+		var idx = 0;
 
 		// if the first character is not 0, either Turtl has come a really long
 		// way (and had over 255 serialization versions) or we're at the very
 		// first version, which just uses Base64.
-		var version	=	(get_byte(enc, idx) << 8) + get_byte(enc, idx + 1);
+		var version = (get_byte(enc, idx) << 8) + get_byte(enc, idx + 1);
 		idx	+=	2;
 
 		// TODO: if we ever get above 1000 versions, change this. The lowest
@@ -267,7 +267,7 @@ var tcrypt = {
 		if(version <= 4)
 		{
 			// grab HMAC for auth
-			var hmac	=	get_bytes(enc, idx, 32);
+			var hmac = get_bytes(enc, idx, 32);
 			idx	+=	32;
 
 			// allow returning JUST the HMAC hash. can be very useful.
@@ -275,20 +275,20 @@ var tcrypt = {
 		}
 
 		// grab the payload description and decode it
-		var desc_length	=	get_byte(enc, idx);
-		var desc_str	=	get_bytes(enc, idx+1, desc_length);
+		var desc_length = get_byte(enc, idx);
+		var desc_str = get_bytes(enc, idx+1, desc_length);
 		idx	+=	desc_length + 1;
 
 		// grab the IV
-		var iv	=	get_bytes(enc, idx, 16);
+		var iv = get_bytes(enc, idx, 16);
 		idx	+=	16;
 
 		if(options.raw) return get_bytes(enc, 0, idx);
 
 		// finally, the encrypted data
-		var ciphertext	=	get_bytes(enc, idx);
+		var ciphertext = get_bytes(enc, idx);
 
-		var params	=	{
+		var param = {
 			version: version,
 			desc: desc_str,
 			iv: iv,
@@ -296,7 +296,7 @@ var tcrypt = {
 		};
 		if(typeof(hmac) != 'undefined')
 		{
-			params.hmac	=	hmac;
+			params.hmac = hmac;
 		}
 		return params;
 	},
@@ -312,7 +312,7 @@ var tcrypt = {
 	{
 		options || (options = {});
 
-		var version	=	options.version;
+		var version = options.version;
 
 		// support serializing the old version if needed (auth, for example)
 		if(version === 0)
@@ -324,7 +324,7 @@ var tcrypt = {
 		}
 
 		// create initial string, with two version bytes
-		var serialized	=	String.fromCharCode(version >> 8) + String.fromCharCode(version & 255);
+		var serialized = String.fromCharCode(version >> 8) + String.fromCharCode(version & 255);
 
 		// NOTE: we only HMAC for versions <= 4 because 5 and above uses only
 		// authenticated block modes
@@ -372,44 +372,44 @@ var tcrypt = {
 		// for all users are not UTF8 encoded...so, forever probably.
 		if(sjcl.bitArray.bitLength(key) / 8 > 32)
 		{
-			key	=	tcrypt.bin_to_words(sjcl.codec.utf8String.fromBits(key));
+			key = tcrypt.bin_to_words(sjcl.codec.utf8String.fromBits(key));
 		}
 
 		// if we didn't specify cipher, block_mode, or padding in the options,
 		// use the tcrypt defaults.
-		var cipher		=	options.cipher || tcrypt.cipher_index[tcrypt.default_cipher];
-		var block_mode	=	options.block_mode || tcrypt.block_index[tcrypt.default_block];
+		var cipher = options.cipher || tcrypt.cipher_index[tcrypt.default_cipher];
+		var block_mode = options.block_mode || tcrypt.block_index[tcrypt.default_block];
 		if(['gcm', 'ccm'].indexOf(block_mode.toLowerCase()) < 0)
 		{
 			throw new TcryptError('Bad mode: '+ block_mode +' (only authenticated modes allowed: gcm, ccm)');
 		}
 
 		// force latest version. only decryption needs to support old versions.
-		var version		=	options.version;
+		var version = options.version;
 		if(version !== 0 || (version > 0 && version <= 4)) version = tcrypt.current_version;
 
-		var block_class	=	tcrypt.get_block_mode(block_mode);
-		var iv			=	options.iv || tcrypt.iv();
+		var block_cla = tcrypt.get_block_mode(block_mode);
+		var iv = options.iv || tcrypt.iv();
 
 		if(version === 0)
 		{
-			var cipher		=	new sjcl.cipher.aes(key);
-			var ciphertext	=	sjcl.mode.cbc.encrypt(
+			var cipher = new sjcl.cipher.aes(key);
+			var ciphertext = jcl.mode.cbc.encrypt(
 				cipher,
 				sjcl.codec.utf8String.toBits(data),
 				iv,
 				null,
 				{ascii: true}	// added this in for backwards compat
 			);
-			var enc	=	tcrypt.words_to_bin(ciphertext);
-			var formatted	=	tcrypt.serialize(enc, {
+			var enc = tcrypt.words_to_bin(ciphertext);
+			var formatted = tcrypt.serialize(enc, {
 				version: version,
 				iv: tcrypt.words_to_bin(iv)
 			});
 			return formatted;
 		}
 
-		var utf8_random	=	options.utf8_random || tcrypt.random_number();
+		var utf8_random = options.utf8_random || tcrypt.random_number();
 		if(typeof data == 'string')
 		{
 			// utf8 encoding section. up til version 4, all encrypted strings were
@@ -429,23 +429,23 @@ var tcrypt = {
 			// encrypted payload in other ways. for now, just the first bit is used.
 			if(tcrypt.is_utf8(data))
 			{
-				var utf8byte	=	String.fromCharCode(Math.floor(utf8_random * (256 - 128)) + 128);
-				data			=	utf8byte + tcrypt.utf8_encode(data);
+				var utf8byte = String.fromCharCode(Math.floor(utf8_random * (256 - 128)) + 128);
+				data = utf8byte + tcrypt.utf8_encode(data);
 			}
 			else
 			{
-				var utf8byte	=	String.fromCharCode(Math.floor(utf8_random * (256 - 128)));
-				data			=	utf8byte + data;
+				var utf8byte = String.fromCharCode(Math.floor(utf8_random * (256 - 128)));
+				data = utf8byte + data;
 			}
 		}
 		else
 		{
-			var utf8byte	=	String.fromCharCode(Math.floor(utf8_random * (256 - 128)));
-			data			=	sjcl.bitArray.concat([sjcl.bitArray.partial(8, utf8byte)], data)
+			var utf8byte = String.fromCharCode(Math.floor(utf8_random * (256 - 128)));
+			data = jcl.bitArray.concat([sjcl.bitArray.partial(8, utf8byte)], data)
 		}
 
 		// generate serialized description
-		var desc		=	tcrypt.encode_payload_description(version, {
+		var desc = tcrypt.encode_payload_description(version, {
 			cipher: cipher,
 			block_mode: block_mode
 		});
@@ -455,20 +455,20 @@ var tcrypt = {
 		// because we're going to manually append it after encryption. this way
 		// we can use the serialized description data as part of the auth data
 		// so it can't be tampered with.
-		var formatted	=	tcrypt.serialize('', {
+		var formatted = tcrypt.serialize('', {
 			version: version,
 			desc: desc,
 			iv: tcrypt.words_to_bin(iv)
 		});
 		// convert to word array
-		formatted		=	tcrypt.bin_to_words(formatted);
+		formatted = tcrypt.bin_to_words(formatted);
 
 		// our message auth data is every part of our message other than the
 		// ciphertext (version, desc, desc length, iv, etc).
-		var auth		=	formatted;
-		var cipherclass	=	tcrypt.get_cipher(cipher);
-		var cipher		=	new cipherclass(key);
-		var ciphertext	=	block_class.encrypt(
+		var auth = formatted;
+		var ciphercla = tcrypt.get_cipher(cipher);
+		var cipher = new cipherclass(key);
+		var ciphertext = block_class.encrypt(
 			cipher,
 			typeof data == 'string' ? tcrypt.bin_to_words(data) : data,
 			iv,
@@ -479,7 +479,7 @@ var tcrypt = {
 		// TODO: investigate performance tweaks here? doing a concat (depending
 		// on the bit length) may require shifting the *entire* ciphertext words
 		// over, which on a large file could be pretty expensive.
-		var words	=	sjcl.bitArray.concat(formatted, ciphertext);
+		var word = jcl.bitArray.concat(formatted, ciphertext);
 		if(options.uint_array) return new Uint8Array(sjcl.codec.bytes.fromBits(words));
 		return words;
 	},
@@ -515,36 +515,36 @@ var tcrypt = {
 		// for all users are not UTF8 encoded...so, forever probably.
 		if(sjcl.bitArray.bitLength(key) / 8 > 32)
 		{
-			key	=	tcrypt.bin_to_words(sjcl.codec.utf8String.fromBits(key));
+			key = tcrypt.bin_to_words(sjcl.codec.utf8String.fromBits(key));
 		}
 
 		// handle byte arrays
 		if(encrypted instanceof Uint8Array)
 		{
-			encrypted	=	sjcl.codec.bytes.toBits(encrypted);
+			encrypted = jcl.codec.bytes.toBits(encrypted);
 		}
 
 		// split a serialized crypto message into a set of params and options,
 		// including what cipher we used to encrypt it, block mode, padding, iv,
 		// ciphertext (obvis).
-		var params	=	tcrypt.deserialize(encrypted);
-		var version	=	params.version;
+		var param = tcrypt.deserialize(encrypted);
+		var version = params.version;
 
 		if(version === 0)
 		{
-			var desc	=	{
+			var desc = {
 				cipher: 'aes',
 				block_mode: 'cbc'
 			};
 		}
 		else
 		{
-			var desc	=	tcrypt.decode_payload_description(params.version, params.desc);
+			var desc = tcrypt.decode_payload_description(params.version, params.desc);
 		}
 
-		var block_mode	=	this.get_block_mode(desc.block_mode);
-		var iv			=	params.iv;
-		var cipherclass	=	tcrypt.get_cipher(desc.cipher);
+		var block_mode = this.get_block_mode(desc.block_mode);
+		var iv = params.iv;
+		var ciphercla = tcrypt.get_cipher(desc.cipher);
 
 		if(version <= 4)
 		{
@@ -554,27 +554,27 @@ var tcrypt = {
 				// values passed to us by tcrypt.old_formatter.parse to form a
 				// description object. note in this case, we skip HMAC generation
 				// and authentication, and use the master key as the crypto key.
-				var crypto_key	=	key;
-				var hmac_key	=	null;
+				var crypto_key = key;
+				var hmac_key = null;
 			}
 			else
 			{
 				// generate an encryption key and an authentication key from the
 				// master key `key`.
-				var kdf_entry	=	tcrypt.kdf_index[desc.kdf_mode];
-				var keys		=	tcrypt.derive_keys(key, {
+				var kdf_entry = tcrypt.kdf_index[desc.kdf_mode];
+				var key = tcrypt.derive_keys(key, {
 					hasher: tcrypt.get_hasher(kdf_entry[0]),
 					iterations: kdf_entry[1],
 					key_size: kdf_entry[2]
 				});
-				var crypto_key	=	keys.crypto;
-				var hmac_key	=	keys.hmac;
+				var crypto_key = keys.crypto;
+				var hmac_key = keys.hmac;
 			}
 
 			if(params.version !== 0)
 			{
 				// build/authenticate HMAC
-				var hmac	=	tcrypt.words_to_bin(params.hmac);
+				var hmac = tcrypt.words_to_bin(params.hmac);
 				if(hmac && hmac_key)
 				{
 					if(hmac !== tcrypt.authenticate_payload(hmac_key, version, params.desc, params.iv, params.ciphertext))
@@ -584,8 +584,8 @@ var tcrypt = {
 				}
 			}
 
-			var cipher		=	new cipherclass(crypto_key);
-			var decrypted	=	block_mode.decrypt(
+			var cipher = new cipherclass(crypto_key);
+			var decrypted = block_mode.decrypt(
 				cipher,
 				params.ciphertext,
 				iv
@@ -595,12 +595,12 @@ var tcrypt = {
 		{
 			// our message auth data is every part of our message other than the
 			// ciphertext (version, desc, desc length, iv, etc).
-			var auth		=	tcrypt.deserialize(encrypted, {raw: true});
-			var crypto_key	=	key;
-			var cipher		=	new cipherclass(crypto_key);
+			var auth = tcrypt.deserialize(encrypted, {raw: true});
+			var crypto_key = key;
+			var cipher = new cipherclass(crypto_key);
 			try
 			{
-				var decrypted	=	block_mode.decrypt(
+				var decrypted = block_mode.decrypt(
 					cipher,
 					params.ciphertext,
 					iv,
@@ -624,20 +624,20 @@ var tcrypt = {
 		// detect our UTF8 encoding
 		if(version >= 4)
 		{
-			var utf8byte	=	(decrypted[0] >> 24) & 255;
-			var is_utf8		=	utf8byte >= 128;
-			decrypted		=	sjcl.bitArray.bitSlice(decrypted, 8);
+			var utf8byte = (decrypted[0] >> 24) & 255;
+			var is_utf8 = utf8byte >= 128;
+			decrypted = jcl.bitArray.bitSlice(decrypted, 8);
 		}
 		else
 		{
-			var is_utf8		=	true;
+			var is_utf8 = true;
 		}
 
 		if(options.raw) return decrypted;
 		if(options.uint_array) return new Uint8Array(sjcl.codec.bytes.fromBits(decrypted));
 
 		// now perform our UTF8 conversion
-		var decode	=	decrypted;
+		var decode = decrypted;
 		try
 		{
 			if(is_utf8) decode = sjcl.codec.utf8String.fromBits(decode);
@@ -658,13 +658,13 @@ var tcrypt = {
 	{
 		options || (options = {});
 
-		var iterations	=	(options.iterations || 400);
-		var hasher		=	(options.hasher || tcrypt.get_hasher('SHA1'));
-		var key_size	=	(options.key_size || 32);
-		var passphrase	=	tcrypt.bin_to_words(passphrase);
-		var salt		=	tcrypt.bin_to_words(salt || '');
+		var iteration = (options.iterations || 400);
+		var hasher = (options.hasher || tcrypt.get_hasher('SHA1'));
+		var key_size = (options.key_size || 32);
+		var passphrase = tcrypt.bin_to_words(passphrase);
+		var salt = tcrypt.bin_to_words(salt || '');
 
-		var key	=	sjcl.misc.pbkdf2(passphrase, salt, iterations, key_size * 8, function(p) {
+		var key = jcl.misc.pbkdf2(passphrase, salt, iterations, key_size * 8, function(p) {
 			return new sjcl.misc.hmac(p, hasher);
 		});
 		
@@ -830,7 +830,7 @@ var tcrypt = {
 	{
 		options || (options = {});
 
-		var hash	=	tcrypt.get_hasher('SHA256').hash(data);
+		var hash = tcrypt.get_hasher('SHA256').hash(data);
 		if(options.raw) return tcrypt.words_to_bin(hash);
 		return sjcl.codec.hex.fromBits(hash);
 	},
@@ -878,7 +878,7 @@ var tcrypt = {
 	}
 };
 
-tcrypt.asym	=	{
+tcrypt.asym = {
 	current_version: 1,
 
 	/**
@@ -891,8 +891,8 @@ tcrypt.asym	=	{
 	{
 		options || (options = {});
 
-		var version		=	options.version;
-		var serialized	=	String.fromCharCode(version >> 8) + String.fromCharCode(version & 255);
+		var version = options.version;
+		var serialized = String.fromCharCode(version >> 8) + String.fromCharCode(version & 255);
 		serialized		+=	options.tag;
 		serialized		+=	enc;
 
@@ -906,36 +906,36 @@ tcrypt.asym	=	{
 	{
 		options || (options = {});
 
-		var is_str		=	typeof(enc) == 'string';
-		var get_bytes	=	function(data, idx, length)
+		var is_str = typeof(enc) == 'string';
+		var get_byte = function(data, idx, length)
 		{
-			var sliceargs	=	length ? [data, idx * 8, (idx * 8) + (length * 8)] : [data, idx * 8];
+			var slicearg = length ? [data, idx * 8, (idx * 8) + (length * 8)] : [data, idx * 8];
 			return is_str ? tcrypt.bin_to_words(data.substr(idx, length)) : sjcl.bitArray.bitSlice.apply(this, sliceargs);
 		};
-		var get_byte	=	function(data, idx)
+		var get_byte = function(data, idx)
 		{
 			return is_str ? data.charCodeAt(idx) : sjcl.bitArray.extract(data, idx * 8, 8); 
 		}
 
 		// define an index we increment to keep track of deserialization
-		var idx	=	0;
+		var idx = 0;
 
 		// if the first character is not 0, either Turtl has come a really long
 		// way (and had over 255 serialization versions) or we're at the very
 		// first version, which just uses Base64.
-		var version	=	(get_byte(enc, idx) << 8) + get_byte(enc, idx + 1);
+		var version = (get_byte(enc, idx) << 8) + get_byte(enc, idx + 1);
 		idx	+=	2;
 
 		// get the message tag
-		var tag	=	get_bytes(enc, idx, 96);
+		var tag = get_bytes(enc, idx, 96);
 		idx	+=	96;
 
 		if(options.raw) return get_bytes(enc, 0, idx);
 
 		// finally, the encrypted data
-		var ciphertext	=	get_bytes(enc, idx);
+		var ciphertext = get_bytes(enc, idx);
 
-		var params	=	{
+		var param = {
 			version: version,
 			tag: tag,
 			ciphertext: ciphertext
@@ -955,19 +955,19 @@ tcrypt.asym	=	{
 	{
 		options || (options = {});
 
-		var version	=	tcrypt.asym.current_version;
-		var point	=	sjcl.ecc.curves.c384.fromBits(key_bin);
-		var key		=	new sjcl.ecc.elGamal.publicKey(sjcl.ecc.curves.c384, point)
-		var kem		=	key.kem(10);
-		var symkey	=	kem.key;
-		var tag		=	kem.tag;
+		var version = tcrypt.asym.current_version;
+		var point = jcl.ecc.curves.c384.fromBits(key_bin);
+		var key = new sjcl.ecc.elGamal.publicKey(sjcl.ecc.curves.c384, point)
+		var kem = key.kem(10);
+		var symkey = kem.key;
+		var tag = kem.tag;
 
-		var ciphertext	=	tcrypt.encrypt(symkey, data);
-		var serialized	=	tcrypt.asym.serialize('', {
+		var ciphertext = tcrypt.encrypt(symkey, data);
+		var serialized = tcrypt.asym.serialize('', {
 			version: version,
 			tag: tcrypt.words_to_bin(tag)
 		});
-		serialized		=	tcrypt.bin_to_words(serialized);
+		serialized = tcrypt.bin_to_words(serialized);
 
 		// TODO: find a better way to concat?
 		return sjcl.bitArray.concat(serialized, ciphertext);
@@ -984,10 +984,10 @@ tcrypt.asym	=	{
 	{
 		options || (options = {});
 
-		var key		=	new sjcl.ecc.elGamal.secretKey(sjcl.ecc.curves.c384, sjcl.bn.fromBits(key_bin));
-		var version	=	tcrypt.asym.current_version;
-		var params	=	tcrypt.asym.deserialize(data);
-		var symkey	=	key.unkem(params.tag);
+		var key = new sjcl.ecc.elGamal.secretKey(sjcl.ecc.curves.c384, sjcl.bn.fromBits(key_bin));
+		var version = tcrypt.asym.current_version;
+		var param = tcrypt.asym.deserialize(data);
+		var symkey = key.unkem(params.tag);
 
 		return tcrypt.decrypt(symkey, params.ciphertext, options);
 	},
@@ -997,7 +997,7 @@ tcrypt.asym	=	{
 	 */
 	generate_ecc_keys: function()
 	{
-		var keys	=	sjcl.ecc.elGamal.generateKeys(384, 10);
+		var key = jcl.ecc.elGamal.generateKeys(384, 10);
 		return {public: keys.pub._point.toBits(), private: keys.sec.get()};
 	}
 };

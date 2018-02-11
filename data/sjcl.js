@@ -2584,7 +2584,7 @@ sjcl.prng.prototype = {
   },
 
   _fireEvent: function (name, arg) {
-    var j, cbs=sjcl.random._callbacks[name], cbsTemp=[];
+    var j, cb = jcl.random._callbacks[name], cbsTemp=[];
     /* TODO: there is a race condition between removing collectors and firing them */
 
     /* I'm not sure if this is necessary; in C++, iterating over a

@@ -1,11 +1,11 @@
-ext.bookmarker	=	{
+ext.bookmarker = {
 	get_content_type: function(url, finishcb)
 	{
 		if(url.match(/^https?:/))
 		{
-			var xhr	=	new XMLHttpRequest();
+			var xhr = new XMLHttpRequest();
 			xhr.open('GET', url, true);
-			xhr.onreadystatechange	=	function()
+			xhr.onreadystatechange = function()
 			{
 				if(xhr.readyState == 4)
 				{
@@ -17,10 +17,10 @@ ext.bookmarker	=	{
 		}
 		else if(url.match(/^file:/))
 		{
-			var type	=	'text/html';
+			var type = 'text/html';
 			if(url.match(/\.(jpe?g|gif|png|bmp)$/))
 			{
-				type	=	'image/'+url.replace(/^.*\.(jpe?g|gif|png|bmp)$/, '$1');
+				type = 'image/'+url.replace(/^.*\.(jpe?g|gif|png|bmp)$/, '$1');
 			}
 			(function() { finishcb(type); }).delay(0, this);
 		}
@@ -34,11 +34,11 @@ ext.bookmarker	=	{
 	{
 		options || (options = {});
 
-		var tab		=	null;
-		var type	=	'';
-		var do_bookmark	=	function(data)
+		var tab = null;
+		var type = '';
+		var do_bookmark = function(data)
 		{
-			var text	=	'';
+			var text = '';
 			if(data.image && data.image != '')
 			{
 				text	+=	'![image]('+data.image+')  \n';
@@ -47,7 +47,7 @@ ext.bookmarker	=	{
 			{
 				text	+=	data.desc;
 			}
-			var linkdata	=	{
+			var linkdata = {
 				title: type == 'image' ? '' : tab.title,
 				url: tab.url,
 				type: type,
@@ -58,16 +58,16 @@ ext.bookmarker	=	{
 		};
 
 		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-			tab	=	tabs[0];
+			tab = tabs[0];
 			if(tab.url.match(/^chrome/))
 			{
-				type	=	'link';
+				type = 'link';
 				do_bookmark({image: false});
 			}
 			else
 			{
 				ext.bookmarker.get_content_type(tab.url, function(content_type) {
-					type	=	content_type.match(/^image/) ? 'image' : 'link';
+					type = content_type.match(/^image/) ? 'image' : 'link';
 					if(type == 'image')
 					{
 						do_bookmark({});

@@ -1,18 +1,18 @@
 /**
  * Desktop <--> extension communication module
  */
-ext.comm	=	{
+ext.comm = {
 	send: function(cmd, data, options)
 	{
 		options || (options = {});
 
-		var req		=	new XMLHttpRequest();
-		req.onload	=	function()
+		var req = new XMLHttpRequest();
+		req.onload = function()
 		{
-			var res	=	this.responseText;
+			var re = this.responseText;
 			try
 			{
-				var obj	=	JSON.parse(res);
+				var obj = JSON.parse(res);
 			}
 			catch(e)
 			{
@@ -29,13 +29,13 @@ ext.comm	=	{
 				if(options.success) options.success(obj);
 			}
 		};
-		req.onerror	=	function()
+		req.onerror = function()
 		{
 			// signal a timeout
 			if(options.error) options.error(null, -1);
 		};
 
-		data	=	ext.comm.process(cmd, data);
+		data = ext.comm.process(cmd, data);
 		req.open('get', 'http://127.0.0.1:7471/'+cmd+'?data='+encodeURIComponent(data), true);
 		req.send();
 	},
@@ -49,13 +49,13 @@ ext.comm	=	{
 	 */
 	process: function(cmd, data)
 	{
-		var str	=	JSON.stringify(data);
+		var str = JSON.stringify(data);
 		if(cmd == 'pair') return str;
 
-		var key	=	ext.pairing.get_key({binary: true});
+		var key = ext.pairing.get_key({binary: true});
 		if(!key) return false;
 
-		data	=	tcrypt.asym.encrypt(key, str);
+		data = tcrypt.asym.encrypt(key, str);
 		return tcrypt.to_base64(data);
 	}
 };

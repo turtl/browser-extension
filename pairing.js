@@ -9,7 +9,7 @@ var get_popup = function()
 		.filter(function(win) { return win.is_popup; })[0];
 };
 
-ext.pairing	=	{
+ext.pairing = {
 	start: function()
 	{
 		var popup = get_popup();
@@ -85,17 +85,17 @@ ext.pairing	=	{
 
 	set_key: function(key_hex)
 	{
-		var key	=	tcrypt.key_to_string(tcrypt.from_hex(key_hex));
-		localStorage['pairing_key']	=	key;
+		var key = tcrypt.key_to_string(tcrypt.from_hex(key_hex));
+		localStorage['pairing_key'] = key;
 	},
 
 	get_key: function(options)
 	{
 		options || (options = {});
-		var key	=	localStorage.pairing_key;
+		var key = localStorage.pairing_key;
 		if(options.binary)
 		{
-			key	=	tcrypt.key_to_bin(key);
+			key = tcrypt.key_to_bin(key);
 		}
 		return key;
 	},

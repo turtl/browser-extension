@@ -1,11 +1,11 @@
 // run the scrape
-var do_bookmark	=	function(options)
+var do_bookmark = function(options)
 {
 	options || (options = {});
 
-	var meta	=	document.getElementsByTagName('meta');
-	var desc	=	false;
-	var image	=	false;
+	var meta = document.getElementsByTagName('meta');
+	var desc = false;
+	var image = false;
 	for(var x in meta)
 	{
 		if(meta[x].name != 'description') continue;
@@ -13,41 +13,41 @@ var do_bookmark	=	function(options)
 		break;
 	}
 
-	var og_image	=	null;
+	var og_image = null;
 	for(var x in meta)
 	{
 		if(meta[x].getAttribute && meta[x].getAttribute('property') == 'og:image')
 		{
-			og_image	=	meta[x].content;
+			og_image = meta[x].content;
 			break;
 		}
 	}
 
-	var image_size_acceptable	=	function(width, height)
+	var image_size_acceptable = function(width, height)
 	{
 		if(width < 150 || height < 150) return false;
 		return true;
 	};
 
-	var do_check_images	=	function()
+	var do_check_image = function()
 	{
 		if(!image)
 		{
-			var images	=	document.getElementsByTagName('img');
-			var divs	=	document.getElementsByTagName('div');
+			var image = document.getElementsByTagName('img');
+			var div = document.getElementsByTagName('div');
 
-			var size	=	0;	// used to track largest image
+			var size = 0;	// used to track largest image
 
 			// check <img> tags
 			for(var i = 0, n = images.length; i < n; i++)
 			{
-				var img		=	images[i];
+				var img = images[i];
 				if(!image_size_acceptable(img.width, img.height)) continue;
-				var isize	=	img.width * img.height;
+				var isize = img.width * img.height;
 				if(isize > size)
 				{
-					size	=	isize;
-					image	=	img.src;
+					size = isize;
+					image = img.src;
 				}
 			}
 
@@ -55,24 +55,24 @@ var do_bookmark	=	function(options)
 			// <img> tags).
 			for(var i = 0, n = divs.length; i < n; i++)
 			{
-				var div	=	divs[i];
+				var div = divs[i];
 				if(!div.style.width || !div.style.height) continue;
 				if(!div.style.backgroundImage) continue;
 				if(div.style.width < 200 || div.style.height < 200) continue;
-				var img	=	new Image();
-				img.src	=	div.style.backgroundImage.replace(/^url\(['"]?/, '').replace(/['"]?\)$/, '');
+				var img = new Image();
+				img.src = div.style.backgroundImage.replace(/^url\(['"]?/, '').replace(/['"]?\)$/, '');
 				if(img.width < 150 || img.height < 150) continue;
-				var isize	=	img.width * img.height;
+				var isize = img.width * img.height;
 				if(isize > size)
 				{
-					size	=	isize;
-					image	=	img.src;
+					size = isize;
+					image = img.src;
 				}
 			}
 		}
 	}
 
-	var finish	=	function()
+	var finish = function()
 	{
 		// if we have a good image, axe the description: it's NEVER helpful.
 		// seriously, meta descriptions are incredibly worthless
@@ -84,13 +84,13 @@ var do_bookmark	=	function(options)
 		// fix rare but pesky relative urls
 		if(image)
 		{
-			var a	=	document.createElement('a');
-			a.href	=	image;
-			image	=	a.href;
+			var a = document.createElement('a');
+			a.href = image;
+			image = a.href;
 		}
 
 		// formulate our complete response LOL
-		var send	=	{
+		var send = {
 			image: image,
 			desc: desc
 		};
@@ -101,13 +101,13 @@ var do_bookmark	=	function(options)
 	if(og_image)
 	{
 		// we have an og:image ...is it big enough?
-		var img			=	new Image();
-		var loaded		=	false;
-		var cancelled	=	false;	
-		img.onload		=	function() {
+		var img = new Image();
+		var loaded = false;
+		var cancelled = false;	
+		img.onload = function() {
 			// we've been axed (probably took too long to load). do nothing
 			if(cancelled) return false;
-			loaded	=	true;
+			loaded = true;
 			img.onload = null;
 			// if the og:image sucks, check our other options
 			if(!image_size_acceptable(img.width, img.height))
@@ -116,14 +116,14 @@ var do_bookmark	=	function(options)
 			}
 			finish();
 		};
-		img.src	=	og_image;
+		img.src = og_image;
 
 		// if loading the image takes longer than a few seconds, fuck it, check the
 		// images on the page
 		setTimeout(function() {
 			// if og:image loaded already, just forget it
 			if(loaded) return false;
-			cancelled	=	true;
+			cancelled = true;
 			do_check_images();
 			finish();
 		}, 2000);
