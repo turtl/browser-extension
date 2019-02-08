@@ -42,10 +42,13 @@ function init()
 		};
 
 		form.addEvent('submit', function(e) {
-			s.stop();
-			onchange();
+			e.stop();
+			var val = inp.value;
+			if(val_set || !val || val == '') return false;
+			val_set = true;
+			app.ext.pairing.finish(val);
 		}, false);
-		inp.addEvent('change', onchange, false);
+		//inp.addEvent('change', onchange, false);
 		inp.addEvent('paste', onchange, false);
 	}
 }

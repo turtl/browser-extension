@@ -32,7 +32,6 @@
 
 	"browser_action": {
 		"default_icon": "data/images/favicon.96.png",
-		"default_popup": "data/pair/index.html",
 		"default_title": "Bookmark this page in Turtl"
 	},
 

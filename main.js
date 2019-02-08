@@ -8,8 +8,12 @@ ext.main = {
 	/**
 	 * Called on extension init.
 	 */
-	setup: function()
-	{
+	setup: function() {
+		chrome.browserAction.onClicked.addListener(function(tab){
+			chrome.tabs.create({
+				url: chrome.extension.getURL('data/pair/index.html'),
+			});
+		});
 	}
 };
 
