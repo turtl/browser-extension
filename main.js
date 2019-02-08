@@ -5,14 +5,31 @@
  * all its libraries.
  */
 ext.main = {
+	activetab: null,
+	pairtab: null,
 	/**
 	 * Called on extension init.
 	 */
 	setup: function() {
 		chrome.browserAction.onClicked.addListener(function(tab){
-			chrome.tabs.create({
-				url: chrome.extension.getURL('data/pair/index.html'),
+			if(ext.pairing.have_key()) {
+				ext.pairing.do_bookmark();
+				return;
+			}
+			if(ext.pairtab) {
+				chrome.tabs.update(ext.pairtab.id, {highlighted: true});
+				return;
+			}
+			chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+				ext.activetab = tabs[0];
+				chrome.tabs.create({url: chrome.extension.getURL('data/pair/index.html')}, function(tab) {
+					ext.pairtab = tab;
+				});
 			});
+		});
+		chrome.tabs.onRemoved.addListener(function(tabid) {
+			if(!ext.pairtab || tabid != ext.pairtab.id) return;
+			ext.pairtab = null;
 		});
 	}
 };

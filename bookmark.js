@@ -57,8 +57,7 @@ ext.bookmarker = {
 			if(options.complete) options.complete(linkdata);
 		};
 
-		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-			tab = tabs[0];
+		const bookmark_tab = function() {
 			if(tab.url.match(/^chrome/))
 			{
 				type = 'link';
@@ -67,7 +66,7 @@ ext.bookmarker = {
 			else
 			{
 				ext.bookmarker.get_content_type(tab.url, function(content_type) {
-					type = content_type.match(/^image/) ? 'image' : 'link';
+					type = (content_type && content_type.match(/^image/)) ? 'image' : 'link';
 					if(type == 'image')
 					{
 						do_bookmark({});
@@ -84,7 +83,17 @@ ext.bookmarker = {
 					}
 				});
 			}
-		});
+		};
+		if(ext.activetab) {
+			tab = ext.activetab;
+			ext.activetab = null;
+			bookmark_tab();
+		} else {
+			chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+				tab = tabs[0];
+				bookmark_tab();
+			});
+		}
 	}
 };
 

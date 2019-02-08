@@ -1,12 +1,5 @@
-var get_popup = function()
-{
-	var popup = chrome.extension.getViews({type: 'popup'})[0];
-	if(popup) return popup;
-
-	// vivaldi hax
-	var windows = chrome.extension.getViews();
-	return windows
-		.filter(function(win) { return win.is_popup; })[0];
+const get_popup = function() {
+	return chrome.extension.getViews({type: 'tab', tabId: ext.pairtab.id})[0];
 };
 
 ext.pairing = {
@@ -32,9 +25,10 @@ ext.pairing = {
 			pubkey: pubkey,
 			success: function(res) {
 				ext.pairing.set_key(pubkey);
-				// finally, complete the action we set out to do
-				ext.pairing.do_bookmark();
-				if(popup) popup.switch_tab('load');
+				ext.pairing.close(function() {
+					// finally, complete the action we set out to do
+					ext.pairing.do_bookmark();
+				});
 			},
 			error: function(err, code) {
 				console.error('pair: ping: ', err, code);
@@ -50,7 +44,6 @@ ext.pairing = {
 			complete: function(data) {
 				ext.comm.send('bookmark', data, {
 					success: function() {
-						ext.pairing.close();
 					},
 					error: function(err, code) {
 						console.error('error bookmarking: ', err);
@@ -78,11 +71,14 @@ ext.pairing = {
 		}
 	},
 
-	close: function()
+	close: function(fn)
 	{
-		var popup = get_popup();
-		if(!popup) return false;
-		popup.close();
+		if(!ext.pairtab) return false;
+		setTimeout(function() {
+			chrome.tabs.remove(ext.pairtab.id, function() {
+				fn();
+			});
+		}, 100);
 	},
 
 	set_key: function(key_hex)
