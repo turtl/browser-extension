@@ -3,7 +3,7 @@
 
 	"name": "Turtl",
 	"description": "A bookmarking utility for the Turtl app (https://turtlapp.com/)",
-	"version": "0.7.0",
+	"version": "0.7.2",
 	"icons": {
 		"48": "data/images/favicon.48.png",
 		"96": "data/images/favicon.96.png",
